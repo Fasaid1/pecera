@@ -10,6 +10,11 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
+  logging: ^1.0.0
+  excel: ^2.0.4   # Para manejar archivos Excel
+  path_provider: ^2.0.2  # Para obtener las rutas de almacenamiento
+  open_file: ^3.0.3      # Para abrir los archivos
+  flutter_datetime_picker: ^1.5.1
 
 dev_dependencies:
   flutter_test:
