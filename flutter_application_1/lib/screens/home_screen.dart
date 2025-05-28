@@ -1,79 +1,91 @@
 import 'package:flutter/material.dart';
-import 'crear_pecera_screen.dart';
-import 'control_parametros_screen.dart';
-import 'gastos_screen.dart';
-import 'ganancias_screen.dart';
+import 'homeContent_screem.dart';
 import 'reportes_screen.dart';
+import 'ajustes_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex = 1;
+
+  final List<Widget> _screens = [
+    const ReportesScreen(),
+    const HomeContent(),
+    const AjustesScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('assets/images/fondo_pecera.jpg'),
-          fit: BoxFit.cover,
+    return Scaffold(
+      backgroundColor: const Color(0xFFC9F0FF),
+      appBar: AppBar(
+        title: const Text(
+          'Gestión de Peceras',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
+        backgroundColor: const Color(0xFF009788),
+        elevation: 0,
+        centerTitle: true,
       ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: const Text('Gestión de Peceras'),
-          backgroundColor:const  Color.fromRGBO(0, 128, 128, 0.8),
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          color: Color(0xFF009788),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10,
+              offset: Offset(0, -2),
+            ),
+          ],
         ),
-        drawer: Drawer(
-          child: Column(
-            children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(color: Colors.teal),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset('assets/images/logo.png', width: 150),
-                    const SizedBox(height: 10),
-                    const Text('Menú', style: TextStyle(color: Colors.white, fontSize: 20)),
-                  ],
-                ),
+        child: NavigationBarTheme(
+          data: NavigationBarThemeData(
+            labelTextStyle: MaterialStateProperty.all(
+              const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
               ),
-              ListTile(
-                leading: const Icon(Icons.add),
-                title: const Text('Crear Pecera'),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CrearPeceraScreen())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.thermostat),
-                title: const Text('Control de Parámetros'),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ControlParametrosScreen())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.money),
-                title: const Text('Gastos'),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GastosScreen())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.bar_chart),
-                title: const Text('Ganancias'),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const GananciasScreen())),
-              ),
-              ListTile(
-                leading: const Icon(Icons.description),
-                title: const Text('Reportes'),
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReportesScreen())),
-              ),
-            ],
+            ),
+            iconTheme: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.selected)) {
+                return const IconThemeData(size: 32, color: Colors.white);
+              }
+              return const IconThemeData(size: 30, color: Colors.white70);
+            }),
           ),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('assets/images/logo.png', width: 200),
-              const SizedBox(height: 20),
-              const Text(
-                'Bienvenido a la gestión de peceras',
-                style: TextStyle(fontSize: 18, color: Colors.black),
+          child: NavigationBar(
+            selectedIndex: _selectedIndex,
+            onDestinationSelected: _onItemTapped,
+            backgroundColor: Colors.transparent,
+            indicatorColor: Colors.white.withOpacity(0.3),
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.description),
+                selectedIcon: Icon(Icons.description),
+                label: 'Reportes',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.home),
+                selectedIcon: Icon(Icons.home),
+                label: 'Inicio',
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.settings),
+                selectedIcon: Icon(Icons.settings),
+                label: 'Ajustes',
               ),
             ],
           ),
