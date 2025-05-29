@@ -152,7 +152,7 @@ class _HomeContentState extends State<HomeContent> {
             child: const Text(
               '¡No tienes peceras registradas!\nPuedes crear tu primera pecera para comenzar.',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 18,
                 color: Colors.black87,
                 height: 1.5,
               ),
@@ -162,15 +162,22 @@ class _HomeContentState extends State<HomeContent> {
           const SizedBox(height: 20),
           ElevatedButton.icon(
             onPressed: () {
-              // Aquí puedes navegar a la pantalla de crear pecera
-              // Navigator.pushNamed(context, '/crear-pecera');
+              _navigateToCrearPeceraScreen();
             },
-            icon: const Icon(Icons.add),
-            label: const Text('Crear mi primera pecera'),
+            icon: const Icon(
+              Icons.add,
+              size: 28,
+            ),
+            label: const Text(
+              'Crear mi primera pecera',
+              style: TextStyle(fontSize: 18),
+            ),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF009788),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 28,
+                  vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),

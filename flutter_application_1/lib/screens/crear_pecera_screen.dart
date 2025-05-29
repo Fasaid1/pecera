@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../models/peceraModel.dart';
 import '../services/peceraService.dart';
 
@@ -154,14 +153,14 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(12),
                               ),
-                              child: Column(
+                              child: const Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const CircularProgressIndicator(
+                                  CircularProgressIndicator(
                                     color: Color(0xFF009788),
                                   ),
-                                  const SizedBox(height: 16),
-                                  const Text(
+                                  SizedBox(height: 16),
+                                  Text(
                                     'Creando pecera...',
                                     style: TextStyle(
                                       fontSize: 16,
@@ -232,8 +231,8 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
   Widget _buildTextField(
       TextEditingController controller, String label, String hint) {
     Color labelColor =
-        const Color(0xFF006064); // Color teal oscuro que combina con el tema
-    Color floatingLabelColor = const Color(0xFF009788); // Color del AppBar
+        const Color(0xFF006064);
+    Color floatingLabelColor = const Color(0xFF009788);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -273,7 +272,7 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
         ),
         style: const TextStyle(
           color:
-              Color(0xFF37474F), // Color de texto más oscuro y elegante
+              Color(0xFF37474F),
           fontWeight: FontWeight.w500,
         ),
       ),
