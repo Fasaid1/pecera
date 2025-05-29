@@ -1,5 +1,5 @@
 class Pecera {
-  final int id;
+  final int? id;
   final String nombrePecera;
   final int cantidadPeces;
   final double cantidadPh;
@@ -10,7 +10,7 @@ class Pecera {
   final bool esDestacada;
 
   Pecera(
-      {required this.id,
+      {this.id,
       required this.nombrePecera,
       required this.cantidadPeces,
       required this.cantidadPh,

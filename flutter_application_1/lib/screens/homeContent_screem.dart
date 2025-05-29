@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/peceraModel.dart';
 import '../services/peceraService.dart';
+import 'crear_pecera_screen.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -19,6 +20,13 @@ class _HomeContentState extends State<HomeContent> {
   void initState() {
     super.initState();
     _loadPeceras();
+  }
+
+  void _navigateToCrearPeceraScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CrearPeceraScreen()),
+    ).then((result) {});
   }
 
   Future<void> _loadPeceras() async {
@@ -134,7 +142,8 @@ class _HomeContentState extends State<HomeContent> {
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.8),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: const Color(0xFF009788).withOpacity(0.3)),
+              border:
+                  Border.all(color: const Color(0xFF009788).withOpacity(0.3)),
             ),
             child: const Text(
               '¡No tienes peceras registradas!\nPuedes crear tu primera pecera para comenzar.',
@@ -188,11 +197,23 @@ class _HomeContentState extends State<HomeContent> {
                     color: Colors.black87,
                   ),
                 ),
-                IconButton(
-                  onPressed: _loadPeceras,
-                  icon: const Icon(Icons.refresh),
-                  color: const Color(0xFF009788),
-                ),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: _loadPeceras,
+                      icon: const Icon(Icons.refresh_outlined, size: 30),
+                      color: const Color(0xFF009788),
+                    ),
+                    IconButton(
+                      tooltip: 'Crear Pecera',
+                      icon: const Icon(Icons.add_circle_outline, size: 30),
+                      color: const Color(0xFF009788),
+                      onPressed: (){
+                        _navigateToCrearPeceraScreen();
+                      }
+                    ),
+                  ],
+                )
               ],
             ),
             const SizedBox(height: 16),
@@ -267,7 +288,8 @@ class _HomeContentState extends State<HomeContent> {
               if (pecera.esDestacada)
                 Container(
                   margin: const EdgeInsets.only(top: 4),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(20),
@@ -286,7 +308,8 @@ class _HomeContentState extends State<HomeContent> {
               // Información de la pecera
               _buildInfoRow(Icons.iso, '${pecera.cantidadPeces} peces'),
               const SizedBox(height: 8),
-              _buildInfoRow(Icons.calendar_month, 'Siembra: ${_formatDate(pecera.fechaSiembra)}'),
+              _buildInfoRow(Icons.calendar_month,
+                  'Siembra: ${_formatDate(pecera.fechaSiembra)}'),
               const SizedBox(height: 8),
             ],
           ),
