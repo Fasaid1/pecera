@@ -175,9 +175,7 @@ class _HomeContentState extends State<HomeContent> {
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF009788),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 28,
-                  vertical: 16),
+              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -285,13 +283,89 @@ class _HomeContentState extends State<HomeContent> {
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  Container(
-                    width: 12,
-                    height: 12,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: pecera.estado ? Colors.green : Colors.red,
-                    ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: pecera.estado ? Colors.green : Colors.red,
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        icon: const Icon(
+                          Icons.more_vert,
+                          color: Color(0xFF009788),
+                          size: 30,
+                        ),
+                        onSelected: (value) {
+                          _handlePeceraAction(value, pecera);
+                        },
+                        itemBuilder: (BuildContext context) => [
+                          const PopupMenuItem<String>(
+                            value: 'ver_detalles',
+                            child: Row(
+                              children: [
+                                Icon(Icons.visibility,
+                                    size: 23, color: Color(0xFF009788)),
+                                SizedBox(width: 8),
+                                Text(
+                                  'Ver detalles',
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'editar',
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit,
+                                    size: 23, color: Colors.orange),
+                                SizedBox(width: 8),
+                                Text('Editar',
+                                    style: const TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem<String>(
+                            value: pecera.esDestacada
+                                ? 'quitar_destacada'
+                                : 'destacar',
+                            child: Row(
+                              children: [
+                                Icon(
+                                  pecera.esDestacada
+                                      ? Icons.star
+                                      : Icons.star_border,
+                                  size: 23,
+                                  color: Colors.amber,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                    pecera.esDestacada
+                                        ? 'Quitar destacada'
+                                        : 'Destacar',
+                                    style: const TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                          ),
+                          const PopupMenuItem<String>(
+                            value: 'eliminar',
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, size: 23, color: Colors.red),
+                                SizedBox(width: 8),
+                                Text('Eliminar',
+                                    style: const TextStyle(fontSize: 18)),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -354,5 +428,109 @@ class _HomeContentState extends State<HomeContent> {
 
   String _formatDate(DateTime date) {
     return '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}';
+  }
+
+  void _handlePeceraAction(String action, Pecera pecera) {
+    switch (action) {
+      case 'ver_detalles':
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ver detalles de ${pecera.nombrePecera}')),
+        );
+        break;
+      case 'editar':
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Editar ${pecera.nombrePecera}')),
+        );
+        break;
+      case 'destacar':
+      case 'quitar_destacada':
+        _toggleDestacada(pecera);
+        break;
+      case 'eliminar':
+        _showDeleteConfirmation(pecera);
+        break;
+    }
+  }
+
+  Future<void> _toggleDestacada(Pecera pecera) async {
+    try {
+      final nuevaPecera = Pecera(
+        id: pecera.id,
+        cantidadPh: pecera.cantidadPh,
+        nivelAgua: pecera.nivelAgua,
+        cantidadOxigenoDisuelto: pecera.cantidadOxigenoDisuelto,
+        nombrePecera: pecera.nombrePecera,
+        cantidadPeces: pecera.cantidadPeces,
+        fechaSiembra: pecera.fechaSiembra,
+        estado: pecera.estado,
+        esDestacada: !pecera.esDestacada,
+      );
+
+      final fueExitosa = await _peceraService.updateFeatured(
+          nuevaPecera.id!, nuevaPecera.esDestacada);
+      if (fueExitosa) {
+        setState(() {
+          final index = _peceras.indexWhere((p) => p.id == pecera.id);
+          if (index != -1) {
+            _peceras[index] = nuevaPecera;
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(nuevaPecera.esDestacada
+                ? '${nuevaPecera.nombrePecera} ahora es destacada'
+                : '${nuevaPecera.nombrePecera} ya no es destacada'),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo actualizar la pecera')),
+        );
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(nuevaPecera.esDestacada
+              ? '${nuevaPecera.nombrePecera} ahora es destacada'
+              : '${nuevaPecera.nombrePecera} ya no es destacada'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar: ${e.toString()}')),
+      );
+    }
+  }
+
+  void _showDeleteConfirmation(Pecera pecera) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación'),
+          content: Text(
+              '¿Estás seguro de que deseas eliminar "${pecera.nombrePecera}"?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _deletePecera(pecera);
+              },
+              style: TextButton.styleFrom(foregroundColor: Colors.red),
+              child: const Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _deletePecera(Pecera pecera) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${pecera.nombrePecera} eliminada')),
+    );
   }
 }
