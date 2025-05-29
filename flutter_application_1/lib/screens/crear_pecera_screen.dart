@@ -145,7 +145,33 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
                 try {
                   showDialog(
                       context: context,
-                      builder: (_) => CircularProgressIndicator());
+                      barrierDismissible: false,
+                      builder: (_) => Dialog(
+                            backgroundColor: Colors.transparent,
+                            child: Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const CircularProgressIndicator(
+                                    color: Color(0xFF009788),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  const Text(
+                                    'Creando pecera...',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ));
                   Pecera? peceraCreada =
                       await _peceraService.createPecera(nuevaPecera);
                   Navigator.pop(context);
@@ -177,11 +203,24 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
                   print("Error al crear pecera: $e");
                 }
               },
-              child: const Text('Guardar Pecera'),
+              child: const Text(
+                'Guardar Pecera',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF008C8C),
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                textStyle: const TextStyle(fontSize: 18),
+                backgroundColor: const Color(0xFF009788),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 3,
+                shadowColor: Colors.black26,
               ),
             ),
           ],
@@ -192,8 +231,9 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
 
   Widget _buildTextField(
       TextEditingController controller, String label, String hint) {
-    Color labelColor = Colors.black54;
-    Color floatingLabelColor = Theme.of(context).primaryColor;
+    Color labelColor =
+        const Color(0xFF006064); // Color teal oscuro que combina con el tema
+    Color floatingLabelColor = const Color(0xFF009788); // Color del AppBar
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: TextField(
@@ -205,26 +245,37 @@ class _CrearPeceraScreenState extends State<CrearPeceraScreen> {
           labelText: label,
           labelStyle: TextStyle(
             color: labelColor,
-            fontWeight: FontWeight.normal,
+            fontWeight: FontWeight.w500,
           ),
           floatingLabelStyle: TextStyle(
-            color: floatingLabelColor, // Color del label cuando está enfocado/flotando
-            fontWeight: FontWeight.bold, // Opcional: hacerlo bold cuando flota
+            color: floatingLabelColor,
+            fontWeight: FontWeight.bold,
           ),
           hintText: hint,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(color: Colors.grey),
+          hintStyle: TextStyle(
+            color: labelColor.withOpacity(0.6),
           ),
-          focusedBorder: OutlineInputBorder( // Color del borde cuando está enfocado
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 2.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(color: labelColor.withOpacity(0.3)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide:
+                BorderSide(color: labelColor.withOpacity(0.4), width: 1.5),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(color: floatingLabelColor, width: 2.0),
           ),
           filled: true,
-          fillColor: Colors.white.withOpacity(0.9),
+          fillColor: Colors.white.withOpacity(0.95),
         ),
-        // El estilo del texto ingresado por el usuario
-        style: TextStyle(color: Colors.black87), // Asegúrate de que el texto ingresado también contraste
+        style: const TextStyle(
+          color:
+              Color(0xFF37474F), // Color de texto más oscuro y elegante
+          fontWeight: FontWeight.w500,
+        ),
       ),
     );
   }

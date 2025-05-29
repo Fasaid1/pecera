@@ -26,7 +26,11 @@ class _HomeContentState extends State<HomeContent> {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => const CrearPeceraScreen()),
-    ).then((result) {});
+    ).then((result) {
+      if (result == true) {
+        _loadPeceras();
+      }
+    });
   }
 
   Future<void> _loadPeceras() async {
@@ -205,13 +209,12 @@ class _HomeContentState extends State<HomeContent> {
                       color: const Color(0xFF009788),
                     ),
                     IconButton(
-                      tooltip: 'Crear Pecera',
-                      icon: const Icon(Icons.add_circle_outline, size: 30),
-                      color: const Color(0xFF009788),
-                      onPressed: (){
-                        _navigateToCrearPeceraScreen();
-                      }
-                    ),
+                        tooltip: 'Crear Pecera',
+                        icon: const Icon(Icons.add_circle_outline, size: 30),
+                        color: const Color(0xFF009788),
+                        onPressed: () {
+                          _navigateToCrearPeceraScreen();
+                        }),
                   ],
                 )
               ],
