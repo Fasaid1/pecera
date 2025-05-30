@@ -65,7 +65,7 @@ class PeceraService {
         "cantidadOxigenoDisuelto": pecera.cantidadOxigenoDisuelto,
         "nivelAgua": pecera.nivelAgua,
         "cantidadPh": pecera.cantidadPh,
-        "fechaSiembra": pecera.fechaSiembra.toIso8601String(),
+        "fechaSiembra": pecera.fechaSiembra!.toIso8601String(),
         "estado": pecera.estado,
         "esDestacada": pecera.esDestacada,
       };
@@ -142,6 +142,45 @@ class PeceraService {
       print('Excepción al actualizar pecera destacada: $e');
       throw Exception(
           'Excepción al conectar con el servidor para actualizar pecera destacada.');
+    }
+  }
+
+  Future<bool> updatePecera(int peceraId, Pecera pecera) async {
+    try {
+
+      final Map<String, dynamic> requestBody = {
+        "nombrePecera": pecera.nombrePecera,
+        "estado": pecera.estado,
+        "esDestacada": pecera.esDestacada
+      };
+
+      final response = await http.put(
+        Uri.parse('$_baseUrl/$peceraId'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final responseBody = json.decode(response.body);
+        print('Respuesta del servidor: $responseBody');
+
+        if (responseBody.containsKey('pecera') &&
+            responseBody['pecera'] is List) {
+          return true;
+        } else {
+          throw Exception('Respuesta inesperada del servidor.');
+        }
+      } else if (response.statusCode == 404) {
+        print('Pecera no encontrada.');
+        return false;
+      } else {
+        print('Error al actualizar: ${response.statusCode}');
+        return false;
+      }
+    } catch (e) {
+      print('Excepción al actualizar pecera: $e');
+      throw Exception(
+          'Excepción al conectar con el servidor para actualizar pecera.');
     }
   }
 }

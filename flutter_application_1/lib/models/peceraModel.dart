@@ -1,24 +1,24 @@
 class Pecera {
   final int? id;
-  final String nombrePecera;
-  final int cantidadPeces;
-  final double cantidadPh;
-  final double cantidadOxigenoDisuelto;
-  final double nivelAgua;
-  final DateTime fechaSiembra;
-  final bool estado;
-  final bool esDestacada;
+  final String? nombrePecera;
+  final int? cantidadPeces;
+  final double? cantidadPh;
+  final double? cantidadOxigenoDisuelto;
+  final double? nivelAgua;
+  final DateTime? fechaSiembra;
+  final bool? estado;
+  final bool? esDestacada;
 
   Pecera(
       {this.id,
-      required this.nombrePecera,
-      required this.cantidadPeces,
-      required this.cantidadPh,
-      required this.cantidadOxigenoDisuelto,
-      required this.nivelAgua,
-      required this.fechaSiembra,
-      required this.estado,
-      required this.esDestacada});
+       this.nombrePecera,
+       this.cantidadPeces,
+       this.cantidadPh,
+       this.cantidadOxigenoDisuelto,
+       this.nivelAgua,
+       this.fechaSiembra,
+       this.estado,
+       this.esDestacada});
 
   factory Pecera.fromJson(Map<String, dynamic> json) => Pecera(
       id: json["id"],
@@ -38,7 +38,7 @@ class Pecera {
         "cantidadPh": cantidadPh,
         "cantidadOxigenoDisuelto": cantidadOxigenoDisuelto,
         "nivelAgua": nivelAgua,
-        "fechaSiembra": fechaSiembra.toIso8601String(),
+        "fechaSiembra": fechaSiembra!.toIso8601String(),
         "estado": estado,
         "esDestacada": esDestacada
       };

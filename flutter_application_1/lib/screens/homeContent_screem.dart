@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import '../forms/editar_pecera_screen.dart';
 import '../models/peceraModel.dart';
 import '../services/peceraService.dart';
-import 'crear_pecera_screen.dart';
+import '../forms/crear_pecera_screen.dart';
 
 class HomeContent extends StatefulWidget {
   const HomeContent({super.key});
@@ -273,7 +274,7 @@ class _HomeContentState extends State<HomeContent> {
                 children: [
                   Expanded(
                     child: Text(
-                      pecera.nombrePecera,
+                      pecera.nombrePecera!,
                       style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -291,7 +292,7 @@ class _HomeContentState extends State<HomeContent> {
                         height: 12,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: pecera.estado ? Colors.green : Colors.red,
+                          color: pecera.estado! ? Colors.green : Colors.red,
                         ),
                       ),
                       PopupMenuButton<String>(
@@ -331,13 +332,13 @@ class _HomeContentState extends State<HomeContent> {
                             ),
                           ),
                           PopupMenuItem<String>(
-                            value: pecera.esDestacada
+                            value: pecera.esDestacada!
                                 ? 'quitar_destacada'
                                 : 'destacar',
                             child: Row(
                               children: [
                                 Icon(
-                                  pecera.esDestacada
+                                  pecera.esDestacada!
                                       ? Icons.star
                                       : Icons.star_border,
                                   size: 23,
@@ -345,7 +346,7 @@ class _HomeContentState extends State<HomeContent> {
                                 ),
                                 const SizedBox(width: 8),
                                 Text(
-                                    pecera.esDestacada
+                                    pecera.esDestacada!
                                         ? 'Quitar destacada'
                                         : 'Destacar',
                                     style: const TextStyle(fontSize: 18)),
@@ -369,7 +370,7 @@ class _HomeContentState extends State<HomeContent> {
                   ),
                 ],
               ),
-              if (pecera.esDestacada)
+              if (pecera.esDestacada!)
                 Container(
                   margin: const EdgeInsets.only(top: 4),
                   padding:
@@ -393,7 +394,7 @@ class _HomeContentState extends State<HomeContent> {
               _buildInfoRow(Icons.iso, '${pecera.cantidadPeces} peces'),
               const SizedBox(height: 8),
               _buildInfoRow(Icons.calendar_month,
-                  'Siembra: ${_formatDate(pecera.fechaSiembra)}'),
+                  'Siembra: ${_formatDate(pecera.fechaSiembra!)}'),
               const SizedBox(height: 8),
             ],
           ),
@@ -438,9 +439,7 @@ class _HomeContentState extends State<HomeContent> {
         );
         break;
       case 'editar':
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Editar ${pecera.nombrePecera}')),
-        );
+        _toggleUpdate(pecera);
         break;
       case 'destacar':
       case 'quitar_destacada':
@@ -450,6 +449,19 @@ class _HomeContentState extends State<HomeContent> {
         _showDeleteConfirmation(pecera);
         break;
     }
+  }
+
+  Future<void> _toggleUpdate(Pecera pecera) async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UpdatePeceraScreen(pecera: pecera),
+      ),
+    ).then((result) {
+      if (result == true) {
+        _loadPeceras();
+      }
+    });
   }
 
   Future<void> _toggleDestacada(Pecera pecera) async {
@@ -463,11 +475,11 @@ class _HomeContentState extends State<HomeContent> {
         cantidadPeces: pecera.cantidadPeces,
         fechaSiembra: pecera.fechaSiembra,
         estado: pecera.estado,
-        esDestacada: !pecera.esDestacada,
+        esDestacada: !pecera.esDestacada!,
       );
 
       final fueExitosa = await _peceraService.updateFeatured(
-          nuevaPecera.id!, nuevaPecera.esDestacada);
+          nuevaPecera.id!, nuevaPecera.esDestacada!);
       if (fueExitosa) {
         setState(() {
           final index = _peceras.indexWhere((p) => p.id == pecera.id);
@@ -477,7 +489,7 @@ class _HomeContentState extends State<HomeContent> {
         });
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(nuevaPecera.esDestacada
+            content: Text(nuevaPecera.esDestacada!
                 ? '${nuevaPecera.nombrePecera} ahora es destacada'
                 : '${nuevaPecera.nombrePecera} ya no es destacada'),
           ),
@@ -489,7 +501,7 @@ class _HomeContentState extends State<HomeContent> {
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(nuevaPecera.esDestacada
+          content: Text(nuevaPecera.esDestacada!
               ? '${nuevaPecera.nombrePecera} ahora es destacada'
               : '${nuevaPecera.nombrePecera} ya no es destacada'),
         ),
